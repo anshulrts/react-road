@@ -45,6 +45,7 @@ class App extends Component {
                 <form>
                     <input
                         type="text"
+                        value = { searchTerm }
                         onChange = { evt => this.onSearchChange(evt) }
                     / >
                 </form>
