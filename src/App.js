@@ -67,7 +67,17 @@ class App extends Component {
     }
 }
 
-class Search extends Component {
+const Search = ({ value, onChange, children }) =>
+        <form>
+            { children }
+            <input
+                type="text"
+                value = { value }
+                onChange = { onChange }
+            / >
+        </form>
+
+{/* class Search extends Component {
     render () {
         //children is used to implement Composable Components
         const { value, onChange, children } = this.props;
@@ -82,7 +92,7 @@ class Search extends Component {
             </form>
         );
     }
-};
+}; */}
 
 class Table extends Component {
     render () {
