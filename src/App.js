@@ -34,7 +34,7 @@ class App extends Component {
         }
     }
 
-    onSearchChange(event) {
+    onSearchChange = (event) => {
         this.setState({ searchTerm : event.target.value });
     }
 
@@ -44,13 +44,15 @@ class App extends Component {
     }
 
     render() {
-        const {searchTerm, list} = this.state;
+        const { searchTerm, list } = this.state;
         return (
             <div className="App">
             <Search
                 value = { searchTerm }
                 onChange = { this.onSearchChange }
-            />
+            >
+                Search
+            </Search>
             <Table
                 list = { list }
                 pattern = { searchTerm }
@@ -66,12 +68,13 @@ class Search extends Component {
         const { value, onChange } = this.props;
         return (
             <form>
-                    <input
-                        type="text"
-                        value = { value }
-                        onChange = { onChange }
-                    / >
-                </form>
+                {/* { children } */}
+                <input
+                    type="text"
+                    value = { value }
+                    onChange = { onChange }
+                / >
+            </form>
         );
     }
 };
