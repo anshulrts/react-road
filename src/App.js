@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
+//We cannot include a const/let variable inside JS class
 const list = [
     {
         title : 'React',
@@ -27,8 +28,10 @@ const isSearched = searchTerm => item => {
 class App extends Component {
 
     constructor(props) {
+        //All constructors must call super constructors in order to fill them with the value of props
         super(props);
         this.state = {
+            //Since the name of list property is same as list variable, we can write it directly
             list,
             searchTerm : '',
         }
@@ -51,6 +54,7 @@ class App extends Component {
                 value = { searchTerm }
                 onChange = { this.onSearchChange }
             >
+                {/* Implementing Composable Component using the concept of children */}
                 Search
             </Search>
             <Table
@@ -65,6 +69,7 @@ class App extends Component {
 
 class Search extends Component {
     render () {
+        //children is used to implement Composable Components
         const { value, onChange, children } = this.props;
         return (
             <form>
