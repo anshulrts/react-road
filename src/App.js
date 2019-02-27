@@ -2,28 +2,35 @@ import React, { Component } from 'react';
 import './App.css';
 
 //We cannot include a const/let variable inside JS class
-const list = [
-    {
-        title : 'React',
-        url : 'https://reactjs.org',
-        author : 'Jordan Walke',
-        num_comments : 3,
-        points : 4,
-        objectID : 0
-    },
-    {
-        title : 'Redux',
-        url : 'https://redux.js.org',
-        author : 'Don Abramov, Andrew Clark',
-        num_comments : 2,
-        points : 5,
-        objectID : 1
-    }
-];
+// const list = [
+//     {
+//         title : 'React',
+//         url : 'https://reactjs.org',
+//         author : 'Jordan Walke',
+//         num_comments : 3,
+//         points : 4,
+//         objectID : 0
+//     },
+//     {
+//         title : 'Redux',
+//         url : 'https://redux.js.org',
+//         author : 'Don Abramov, Andrew Clark',
+//         num_comments : 2,
+//         points : 5,
+//         objectID : 1
+//     }
+// ];
 
 const isSearched = searchTerm => item => {
     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
 }
+
+const DEFAULT_QUERY = 'redux';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+
+const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
 
 class App extends Component {
 
@@ -32,8 +39,9 @@ class App extends Component {
         super(props);
         this.state = {
             //Since the name of list property is same as list variable, we can write it directly
-            list,
-            searchTerm : '',
+            //list,
+            result : null,
+            searchTerm : DEFAULT_QUERY,
         }
     }
 
@@ -42,12 +50,33 @@ class App extends Component {
     }
 
     onDismiss = (objectID) => {
-        const list = this.state.list.filter(item => item.objectID !== objectID);
-        this.setState({ list });
+        const updatedHits = this.state.result.hits.filter(item => item.objectID !== objectID);
+        //Since hits is a property of this.state.result, we need to use Object Destructuring
+        //(or could have used Object.assign() JS method) to update it
+        this.setState({ 
+            result : {...this.state.result, hits : updatedHits}
+         });
+    }
+
+    setsearchTopStories = result => {
+        this.setState({ result });
+    }
+
+    componentDidMount() {
+        const { searchTerm } = this.state;
+
+        //fetch() is the native API call which is more powerful than XmlHttpRequest
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+            .then(response => response.json())
+            .then(result => this.setsearchTopStories(result))
+            .catch(error => error);
     }
 
     render() {
-        const { searchTerm, list } = this.state;
+        const { searchTerm, result } = this.state;
+
+        if(!result) { return null; }
+
         return (
             <div className="page">
                 <div className="interactions">
@@ -60,7 +89,7 @@ class App extends Component {
                     </Search>
                 </div>
                 <Table
-                    list = { list }
+                    list = { result.hits }
                     pattern = { searchTerm }
                     onDismiss = { this.onDismiss }
                 />
