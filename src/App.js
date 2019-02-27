@@ -64,13 +64,22 @@ class App extends Component {
 
     componentDidMount() {
         const { searchTerm } = this.state;
-
-        //fetch() is the native API call which is more powerful than XmlHttpRequest
-        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
-            .then(response => response.json())
-            .then(result => this.setsearchTopStories(result))
-            .catch(error => error);
+        this.fetchSearchTopStories(searchTerm);
     }
+
+    onSearchSubmit = (event) => {
+        const { searchTerm } = this.state;
+        this.fetchSearchTopStories(searchTerm);
+        event.preventDefault();
+    }
+
+    fetchSearchTopStories = (searchTerm) => {
+        //fetch() is the native browser API call which is more powerful than XmlHttpRequest
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+        .then(response => response.json())
+        .then(result => this.setsearchTopStories(result))
+        .catch(error => { alert("Hello"); return error; });
+    } 
 
     render() {
         const { searchTerm, result } = this.state;
@@ -84,6 +93,7 @@ class App extends Component {
                     <Search
                         value = { searchTerm }
                         onChange = { this.onSearchChange }
+                        onSubmit = { this.onSearchSubmit }
                     >
                         {/* Implementing Composable Component using the concept of children */}
                         Search
@@ -95,7 +105,6 @@ class App extends Component {
                 { result && 
                     <Table
                         list = { result.hits }
-                        pattern = { searchTerm }
                         onDismiss = { this.onDismiss }
                     />
                 }
@@ -104,20 +113,25 @@ class App extends Component {
     }
 }
 
-const Search = ({ value, onChange, children }) =>
-        <form>
+const Search = ({ value, onChange, onSubmit, children }) =>
+        <form onSubmit={onSubmit}>
             { children }
             <input
                 type="text"
                 value = { value }
                 onChange = { onChange }
             / >
+            <button
+                type = "submit"
+            >
+                { children }
+            </button>
         </form>
 
-const Table = ({ list, pattern, onDismiss }) =>
+const Table = ({ list, onDismiss }) =>
         <div className = "table">
             {
-                list.filter(isSearched(pattern)).map(item =>
+                list.map(item =>
                         <div key={item.objectID} className="table-row">
                             <span style={{ width: '40%' }}>
                                 <a href={item.url}>{item.title}</a>
