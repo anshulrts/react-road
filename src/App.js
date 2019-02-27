@@ -76,7 +76,7 @@ class App extends Component {
         const { searchTerm, result } = this.state;
 
         //We do this because of there isn't any result, then we should not display anything
-        if(!result) { return null; }
+        //if(!result) { return null; }
 
         return (
             <div className="page">
@@ -89,11 +89,16 @@ class App extends Component {
                         Search
                     </Search>
                 </div>
-                <Table
-                    list = { result.hits }
-                    pattern = { searchTerm }
-                    onDismiss = { this.onDismiss }
-                />
+                {/* There are several ways of doing conditional rendering in React. The one below is using
+                truthy and falsy way. In JS, (true && 'Hello') will always return 'Hello' and 
+                (false && 'Hello') will always return false */}
+                { result && 
+                    <Table
+                        list = { result.hits }
+                        pattern = { searchTerm }
+                        onDismiss = { this.onDismiss }
+                    />
+                }
             </div>
         );
     }
