@@ -51,7 +51,7 @@ class App extends Component {
 
     onDismiss = (objectID) => {
         const updatedHits = this.state.result.hits.filter(item => item.objectID !== objectID);
-        //Since hits is a property of this.state.result, we need to use Object Destructuring
+        //Since hits is a property of this.state.result, we need to use Spread Operator
         //(or could have used Object.assign() JS method) to update it
         this.setState({ 
             result : {...this.state.result, hits : updatedHits}
