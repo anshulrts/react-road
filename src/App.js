@@ -21,16 +21,11 @@ import './App.css';
 //     }
 // ];
 
-const isSearched = searchTerm => item => {
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-}
-
 const DEFAULT_QUERY = 'redux';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
-
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+const PARAM_PAGE = 'page=';
 
 class App extends Component {
 
@@ -59,7 +54,11 @@ class App extends Component {
     }
 
     setsearchTopStories = result => {
-        this.setState({ result });
+        const {hits, page} = result;
+        const oldHits = page !== 0 ? this.state.result.hits : [];
+        const updatedHits = [...oldHits, ...hits];
+
+        this.setState({ result : {hits : updatedHits, page} });
     }
 
     componentDidMount() {
@@ -73,16 +72,17 @@ class App extends Component {
         event.preventDefault();
     }
 
-    fetchSearchTopStories = (searchTerm) => {
+    fetchSearchTopStories = (searchTerm, page = 0) => {
         //fetch() is the native browser API call which is more powerful than XmlHttpRequest
-        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
         .then(result => this.setsearchTopStories(result))
-        .catch(error => { alert("Hello"); return error; });
+        .catch(error => { alert("Error"); return error; });
     } 
 
     render() {
         const { searchTerm, result } = this.state;
+        const page = (result && result.page) || 0;
 
         //We do this because of there isn't any result, then we should not display anything
         //if(!result) { return null; }
@@ -108,6 +108,13 @@ class App extends Component {
                         onDismiss = { this.onDismiss }
                     />
                 }
+                {/* Clicking on More button will load more news feeds of same searchTerm. Each result is 
+                assgined a page number */}
+                <Button
+                    onClick = { () => this.fetchSearchTopStories(searchTerm, page+1) }
+                >
+                    More
+                </Button>
             </div>
         );
     }
