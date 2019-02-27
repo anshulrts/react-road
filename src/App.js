@@ -75,6 +75,7 @@ class App extends Component {
     render() {
         const { searchTerm, result } = this.state;
 
+        //We do this because of there isn't any result, then we should not display anything
         if(!result) { return null; }
 
         return (
