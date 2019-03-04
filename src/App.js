@@ -38,6 +38,7 @@ class App extends Component {
             results : null,
             searchKey : '',
             searchTerm : DEFAULT_QUERY,
+            error : null,
         }
     }
 
@@ -100,16 +101,17 @@ class App extends Component {
         fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
         .then(result => this.setsearchTopStories(result))
-        .catch(error => { alert("Error"); return error; });
+        .catch(error => { this.setState({ error }) });
     } 
 
     render() {
         const {
             searchTerm,
             results,
-            searchKey
+            searchKey,
+            error
         } = this.state;
-        
+
         const page = (
             results &&
             results[searchKey] &&
@@ -137,10 +139,17 @@ class App extends Component {
                         Search
                     </Search>
                 </div>
-                <Table
+                {
+                    error ?
+                    <div className="interactions">
+                        Error Occurred
+                    </div>
+                    :
+                    <Table
                     list = { list }
                     onDismiss = { this.onDismiss }
-                />
+                    />
+                }
                 <div className="interactions">
                     {/* Clicking on More button will load more news feeds of same searchTerm. Each result is 
                     assgined a page number */}
