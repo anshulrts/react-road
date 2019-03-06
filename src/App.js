@@ -233,16 +233,17 @@ Button.propTypes = {
 };
 
 Table.propTypes = {
-list: PropTypes.arrayOf(
-PropTypes.shape({
-objectID: PropTypes.string.isRequired,
-author: PropTypes.string,
-url: PropTypes.string,
-num_comments: PropTypes.number,
-points: PropTypes.number,
-})
-).isRequired,
-onDismiss: PropTypes.func.isRequired,
+    list : PropTypes.arrayOf(
+            PropTypes.shape(
+            {
+                objectID: PropTypes.string.isRequired,
+                author: PropTypes.string,
+                url: PropTypes.string,
+                num_comments: PropTypes.number,
+                points: PropTypes.number,
+            })
+        ).isRequired,
+    onDismiss: PropTypes.func.isRequired,
 };
 
 
