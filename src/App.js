@@ -72,7 +72,7 @@ class App extends Component {
         const { hits, page } = result;
         const { searchKey, results } = this.state;
 
-        const oldHits = results && results[searchKey] ? result[searchKey].hits : [];
+        const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
         const updatedHits = [...oldHits, ...hits];
 
         this.setState({ results : {
