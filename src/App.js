@@ -174,6 +174,13 @@ class App extends Component {
     }
 }
 
+const withLoading = (Component) => ({ isLoading, ...rest }) =>
+isLoading
+? <Loading />
+: <Component { ...rest } />
+const ButtonWithLoading = withLoading(Button);
+
+
 class Search extends Component {
     componentDidMount() {
         if(this.input) {
