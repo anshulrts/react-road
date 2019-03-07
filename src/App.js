@@ -40,6 +40,7 @@ class App extends Component {
             searchKey : '',
             searchTerm : DEFAULT_QUERY,
             error : null,
+            isLoading : false,
         }
     }
 
@@ -77,7 +78,8 @@ class App extends Component {
         this.setState({ results : {
                 ...results,
                 [searchKey] : { hits : updatedHits, page }
-            }
+            },
+            isLoading : false
         });
     }
 
@@ -98,6 +100,7 @@ class App extends Component {
     }
 
     fetchSearchTopStories = (searchTerm, page = 0) => {
+        this.setState({ isLoading : true });
         //fetch() is the native browser API call which is more powerful than XmlHttpRequest
         fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
@@ -110,7 +113,8 @@ class App extends Component {
             searchTerm,
             results,
             searchKey,
-            error
+            error,
+            isLoading
         } = this.state;
 
         const page = (
@@ -154,11 +158,16 @@ class App extends Component {
                 <div className="interactions">
                     {/* Clicking on More button will load more news feeds of same searchTerm. Each result is 
                     assgined a page number */}
-                    <Button
+                    {
+                        isLoading ?
+                        <Loading />
+                        :
+                        <Button
                         onClick = { () => this.fetchSearchTopStories(searchTerm, page+1) }
-                    >
-                        More
-                    </Button>
+                        >
+                            More
+                        </Button>
+                    }
                 </div>
             </div>
         );
@@ -239,6 +248,9 @@ class Button extends Component {
         )
     }
 }
+
+const Loading = () =>
+    <div>Loading...</div>
 
 Button.propTypes = {
     onClick : PropTypes.func.isRequired,
